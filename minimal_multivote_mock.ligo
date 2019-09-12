@@ -26,11 +26,7 @@ function a_sender(const p: unit): address is
     action_count = 1n;
     voters = record
       threshold = 2n;
-      voters = set [
-        ("tz1VMZLCc7hRQvvHSsj377FNASJ9BnpDQPNJ": address);
-        ("tz1bgkesFfKbQgnmpGvkxDSyQYs8ha6uSiuv": address);
-        ("tz1Uev5FnCRhwsKweHKCApXXGgqSfLYBGvWH": address);
-      ];
+      voters = set [ alice; bob; peter; ];
     end;
     pending_actions = (map []: map(nat, pending_action));
   end
