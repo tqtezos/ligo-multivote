@@ -1,7 +1,13 @@
 // minimal-multivote 
 
+//TODO: add expiration timestamp 
+type action is record
+  id: nat;
+  target: address;
+end
+
 type param is 
-  | Submit of nat * address  //TODO: add expiration timestamp 
+  | Submit of action  
   | Vote of nat * bool
 
 
@@ -21,42 +27,33 @@ type storage_t is record
   pending_actions: map(nat, pending_action)
 end
 
+type ret_type is list(operation) * storage_t
+const noOp: list(operation) = nil
+
+function vote(const s: storage_t; const vote: nat * bool): ret_type is
+  block {
+    skip
+  } with (noOp, s)
+
+function submit(const s: storage_t; const a: action): ret_type is
+  block {
+    skip
+  } with (noOp, s)
+
+
+#include "minimal_multivote_mock.ligo"
+
+// function s(const p: param): ret_type is
+//   block { skip } with (noOp, s)
+  // case p of
+  //   | Vote(v)   -> vote(init_storage, vote)
+  //   | Submit(a) -> submit(init_storage, op)
+  // end
+
 function main(const p: unit; const stotage: unit): (list(operation) * unit) is
   block { 
     skip
    } with ((nil: list(operation)), unit)
-
-
-function s(const p: unit): operation is
-  block { 
-    const a: address = "tz1LMJmzJuoM3AFEgPoQ2kEoPfj9FyskTZpS";
-    const ct: contract(unit) = get_contract(a);
-    const op: operation = transaction(unit, 0mtz, ct)
-   } with op
-
-/* 
-mocking helpers.
-because CLI supports only one metaparameter --amount, we will use amount to encode other mocked meta parameters
-*/
-
-//for testing purposes lets mock a sender address
-#include "addresses.ligo"
-
-function a_sender(const p: unit): address is
-  var a: address := sender
-  block {
-    if amount = 1000000mtz then
-      a := alice
-    else if amount = 2000000mtz then
-      a := bob
-    else if amount = 3000000mtz then
-      a := peter
-    else if amount = 4000000mtz then
-      a := jane
-    else
-      a := sender
-  } with a
-
 
 
 
