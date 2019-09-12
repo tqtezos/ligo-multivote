@@ -28,31 +28,32 @@ type storage_t is record
 end
 
 type ret_type is list(operation) * storage_t
-const noOp: list(operation) = nil
+const nops: list(operation) = nil
 
 function vote(const s: storage_t; const vote: nat * bool): ret_type is
   block {
     skip
-  } with (noOp, s)
+  } with (nops, s)
 
 function submit(const s: storage_t; const a: action): ret_type is
   block {
     skip
-  } with (noOp, s)
+  } with (nops, s)
 
 
 #include "minimal_multivote_mock.ligo"
 
 function s(const p: param): ret_type is
   block { skip } with case p of
-    | Vote(v)   -> (noOp, init_storage) //vote(init_storage, vote)
-    | Submit(a) -> (noOp, init_storage) //submit(init_storage, op)
+    | Vote(v)   -> vote(init_storage, v)
+    | Submit(a) -> submit(init_storage, a)
   end
 
-function main(const p: unit; const stotage: unit): (list(operation) * unit) is
-  block { 
-    skip
-   } with ((nil: list(operation)), unit)
+function main(const p: param; const stotage: storage_t): ret_type is
+  block { skip } with case p of
+    | Vote(v)   -> vote(init_storage, v)
+    | Submit(a) -> submit(init_storage, a)
+  end
 
 
 
