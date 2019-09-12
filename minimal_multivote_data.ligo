@@ -2,8 +2,22 @@
 #include "minimal_multivote.ligo"
 
 
-function submit_p(const p: nat): param is
-  block { skip } with Submit(p, jane)
+/*
+"
+Submit( 4n,
+(\"tz1LMJmzJuoM3AFEgPoQ2kEoPfj9FyskTZpS\": address)
+)
+"
+*/
 
-function get_s(const p: unit): unit is
-  block { skip } with unit
+/*
+"Vote(4n, True)"
+*/
+
+
+
+function param_echo(const p: param): param is
+  block { skip } with p
+
+function storage_echo(const p: storage_t): storage_t is
+  block { skip } with p
