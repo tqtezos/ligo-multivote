@@ -123,8 +123,8 @@ function s(const p: param): ret_type is
     | Submit(a) -> submit(init_storage, a)
   end
 
-function main(const p: param; const stotage: storage_t): ret_type is
+function main(const p: param; const s: storage_t): ret_type is
   block { skip } with case p of
-    | Vote(v)   -> vote(init_storage, v)
-    | Submit(a) -> submit(init_storage, a)
+    | Vote(v)   -> vote(s, v)
+    | Submit(a) -> submit(s, a)
   end
