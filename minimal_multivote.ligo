@@ -23,7 +23,7 @@ end
 
 type storage_t is record
   action_count: nat;
-  voters: auth;
+  authorization: auth;
   pending_actions: map(nat, pending_action)
 end
 
@@ -44,7 +44,7 @@ function assert(const cond: bool; const msg: string): unit is
 function authorized(const s: storage_t): unit is
   block {
     const snd: address = mock_sender(unit);
-    if not set_mem(snd, s.voters.voters) 
+    if not set_mem(snd, s.authorization.voters) 
     then fail("Unauthorized");
     else skip;
   } with unit
@@ -76,7 +76,7 @@ function vote_action(const s: storage_t; const action: pending_action; const vot
     else action.votes := set_remove(snd, action.votes);
 
     const nvotes: nat = size(action.votes);
-    if nvotes < s.voters.threshold
+    if nvotes < s.authorization.threshold
     then ret := update_action(s, vote.0, action);
     else ret := execute_action(s, vote.0, action);
   } with ret

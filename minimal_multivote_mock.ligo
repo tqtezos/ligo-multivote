@@ -24,7 +24,7 @@ function mock_sender(const p: unit): address is
   const init_storage: storage_t =
   record
     action_count = 1n;
-    voters = record
+    authorization = record
       threshold = 2n;
       voters = set [
         alice;
@@ -38,7 +38,7 @@ function mock_sender(const p: unit): address is
   const pending_storage: storage_t =
   record
     action_count = 2n;
-    voters = record
+    authorization = record
       threshold = 2n;
       voters = set [
         alice;
@@ -57,7 +57,7 @@ function mock_sender(const p: unit): address is
   const pending_storage_1: storage_t =
   record
     action_count = 2n;
-    voters = record
+    authorization = record
       threshold = 2n;
       voters = set [
         alice;
