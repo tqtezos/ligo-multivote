@@ -28,23 +28,32 @@ type storage_t is record
 end
 
 type ret_type is list(operation) * storage_t
-const nops: list(operation) = nil
+//const nops: list(operation) = nil
 
 function vote(const s: storage_t; const vote: nat * bool): ret_type is
   block {
     skip
-  } with (nops, s)
+  } with ((nil: list(operation)), s)
+
+function append_action(const s: storage_t): storage_t is
+  block {
+    skip;
+  } with s
 
 function submit(const s: storage_t; const a: action): ret_type is
+  //var ss: storage_t := s
   block {
-    skip
-  } with (nops, s)
+    // if s.action_count =/= a.id
+    // then fail("invalid submittted action id")
+    // else 
+    const sss: storage_t = append_action(s);
+  } with ((nil: list(operation)), sss)
 
 
 #include "minimal_multivote_mock.ligo"
 
 function s(const p: param): ret_type is
-  block { skip } with case p of
+  block { skip  } with case p of
     | Vote(v)   -> vote(init_storage, v)
     | Submit(a) -> submit(init_storage, a)
   end
@@ -54,6 +63,3 @@ function main(const p: param; const stotage: storage_t): ret_type is
     | Vote(v)   -> vote(init_storage, v)
     | Submit(a) -> submit(init_storage, a)
   end
-
-
-
