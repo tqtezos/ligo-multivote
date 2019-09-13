@@ -35,9 +35,15 @@ function vote(const s: storage_t; const vote: nat * bool): ret_type is
     skip
   } with ((nil: list(operation)), s)
 
-function append_action(const s: storage_t): storage_t is
+function append_action(const s: storage_t; const a: address): storage_t is
   block {
-    skip;
+    var pending: map(nat, pending_action) := s.pending_actions;
+    pending[s.action_count] := record
+      action = a;
+      votes = (set_empty : set(address));
+    end;
+    s.action_count := s.action_count + 1n;
+    s.pending_actions := pending;
   } with s
 
 function submit(const s: storage_t; const a: action): ret_type is
@@ -45,7 +51,7 @@ function submit(const s: storage_t; const a: action): ret_type is
   block {
     if s.action_count =/= a.id
     then fail("invalid submittted action id")
-    else ss := append_action(s)
+    else ss := append_action(s, a.target)
   } with ((nil: list(operation)), ss)
 
 
