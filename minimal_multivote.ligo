@@ -28,7 +28,7 @@ type storage_t is record
 end
 
 type ret_type is list(operation) * storage_t
-//const nops: list(operation) = nil
+const nops: list(operation) = nil
 
 
 function assert(const cond: bool; const msg: string): unit is
@@ -51,16 +51,16 @@ function authorized(const s: storage_t): unit is
 
 
 function vote_action(const s: storage_t; const action: pending_action; const vote: nat*bool): ret_type is
-  block { skip } with ((nil: list(operation)), s)
+  block { skip } with (nops, s)
 
 function vote(const s: storage_t; const vote: nat * bool): ret_type is
   block {
       authorized(s);
-      
+
       const pending: option(pending_action) = s.pending_actions[vote.0];
       const r: (bool * ret_type) = case pending of
          | Some(p) -> (True, vote_action(s, p, vote))
-         | None    -> (False, ((nil: list(operation)), s)) 
+         | None    -> (False, (nops, s)) 
       end;
 
       if not r.0 
@@ -86,7 +86,7 @@ function submit(const s: storage_t; const a: action): ret_type is
     if s.action_count =/= a.id
     then fail("invalid submittted action id")
     else ss := append_action(s, a.target)
-  } with ((nil: list(operation)), ss)
+  } with (nops, ss)
 
 
 function s(const p: param): ret_type is
