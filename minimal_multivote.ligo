@@ -12,7 +12,7 @@ type param is
 
 
 type pending_action is record
-  action: address;
+  target: address;
   votes: set(address);
 end
 
@@ -57,7 +57,14 @@ function update_action(const s: storage_t; const id: nat; const action: pending_
    } with (nops, s)
 
 function execute_action(const s: storage_t; const id: nat; const action: pending_action): ret_type is
-  block { skip } with (nops, s)
+  block { 
+    const ct: contract(unit) = get_contract(action.target);
+    const tx: operation = transaction(unit, 0mtz, ct);
+
+    const pending: map(nat, pending_action) = s.pending_actions;
+    remove id from map pending;
+    s.pending_actions := pending;
+   } with (list tx end, s)
 
 function vote_action(const s: storage_t; const action: pending_action; const vote: nat*bool): ret_type is
   var ret: ret_type := (nops, s)
@@ -94,7 +101,7 @@ function append_action(const s: storage_t; const a: address): storage_t is
   block {
     var pending: map(nat, pending_action) := s.pending_actions;
     pending[s.action_count] := record
-      action = a;
+      target = a;
       votes = (set_empty : set(address));
     end;
     s.action_count := s.action_count + 1n;
@@ -112,7 +119,7 @@ function submit(const s: storage_t; const a: action): ret_type is
 
 function s(const p: param): ret_type is
   block { skip  } with case p of
-    | Vote(v)   -> vote(pending_storage, v)
+    | Vote(v)   -> vote(pending_storage_1, v)
     | Submit(a) -> submit(init_storage, a)
   end
 

@@ -37,7 +37,7 @@ function mock_sender(const p: unit): address is
 
   const pending_storage: storage_t =
   record
-    action_count = 1n;
+    action_count = 2n;
     voters = record
       threshold = 2n;
       voters = set [
@@ -49,7 +49,26 @@ function mock_sender(const p: unit): address is
     pending_actions = map [
       1n -> record
         votes = (set[]: set(address));
-        action = ("tz1LMJmzJuoM3AFEgPoQ2kEoPfj9FyskTZpS": address);
+        target = ("tz1LMJmzJuoM3AFEgPoQ2kEoPfj9FyskTZpS": address);
+      end;
+    ];
+  end
+
+  const pending_storage_1: storage_t =
+  record
+    action_count = 2n;
+    voters = record
+      threshold = 2n;
+      voters = set [
+        ("tz1VMZLCc7hRQvvHSsj377FNASJ9BnpDQPNJ": address);
+        ("tz1bgkesFfKbQgnmpGvkxDSyQYs8ha6uSiuv": address);
+        ("tz1Uev5FnCRhwsKweHKCApXXGgqSfLYBGvWH": address);
+      ];
+    end;
+    pending_actions = map [
+      1n -> record
+        votes = set[ ("tz1bgkesFfKbQgnmpGvkxDSyQYs8ha6uSiuv": address); ];
+        target = ("tz1LMJmzJuoM3AFEgPoQ2kEoPfj9FyskTZpS": address);
       end;
     ];
   end
