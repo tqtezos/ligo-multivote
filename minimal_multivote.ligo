@@ -50,7 +50,11 @@ function authorized(const s: storage_t): unit is
   } with unit
 
 function update_action(const s: storage_t; const id: nat; const action: pending_action): ret_type is
-  block { skip } with (nops, s)
+  block { 
+    const pending: map(nat, pending_action) = s.pending_actions;
+    pending[id] := action;
+    s.pending_actions := pending;
+   } with (nops, s)
 
 function execute_action(const s: storage_t; const id: nat; const action: pending_action): ret_type is
   block { skip } with (nops, s)
@@ -101,8 +105,8 @@ function submit(const s: storage_t; const a: action): ret_type is
   var ss: storage_t := s
   block {
     if s.action_count =/= a.id
-    then fail("invalid submittted action id")
-    else ss := append_action(s, a.target)
+    then fail("invalid submittted action id");
+    else ss := append_action(s, a.target);
   } with (nops, ss)
 
 
