@@ -49,9 +49,26 @@ function authorized(const s: storage_t): unit is
     else skip;
   } with unit
 
+function update_action(const s: storage_t; const id: nat; const action: pending_action): ret_type is
+  block { skip } with (nops, s)
+
+function execute_action(const s: storage_t; const id: nat; const action: pending_action): ret_type is
+  block { skip } with (nops, s)
 
 function vote_action(const s: storage_t; const action: pending_action; const vote: nat*bool): ret_type is
-  block { skip } with (nops, s)
+  var ret: ret_type := (nops, s)
+  block { 
+    const snd: address = mock_sender(unit);
+    
+    if vote.1 
+    then action.votes := set_add(snd, action.votes);
+    else action.votes := set_remove(snd, action.votes);
+
+    const nvotes: nat = size(action.votes);
+    if nvotes < s.voters.threshold
+    then ret := update_action(s, vote.0, action);
+    else ret := execute_action(s, vote.0, action);
+  } with ret
 
 function vote(const s: storage_t; const vote: nat * bool): ret_type is
   block {
