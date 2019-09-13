@@ -41,13 +41,12 @@ function append_action(const s: storage_t): storage_t is
   } with s
 
 function submit(const s: storage_t; const a: action): ret_type is
-  //var ss: storage_t := s
+  var ss: storage_t := s
   block {
-    // if s.action_count =/= a.id
-    // then fail("invalid submittted action id")
-    // else 
-    const sss: storage_t = append_action(s);
-  } with ((nil: list(operation)), sss)
+    if s.action_count =/= a.id
+    then fail("invalid submittted action id")
+    else ss := append_action(s)
+  } with ((nil: list(operation)), ss)
 
 
 #include "minimal_multivote_mock.ligo"
