@@ -6,7 +6,7 @@ because CLI supports only one metaparameter --amount, we will use amount to enco
 //for testing purposes lets mock a sender address
 //#include "addresses.ligo"
 
-function a_sender(const p: unit): address is
+function mock_sender(const p: unit): address is
   var a: address := sender
   block {
     if amount = 1000000mtz then
@@ -34,3 +34,24 @@ function a_sender(const p: unit): address is
     end;
     pending_actions = (map []: map(nat, pending_action));
   end
+
+  const pending_storage: storage_t =
+  record
+    action_count = 1n;
+    voters = record
+      threshold = 2n;
+      voters = set [
+        ("tz1VMZLCc7hRQvvHSsj377FNASJ9BnpDQPNJ": address);
+        ("tz1bgkesFfKbQgnmpGvkxDSyQYs8ha6uSiuv": address);
+        ("tz1Uev5FnCRhwsKweHKCApXXGgqSfLYBGvWH": address);
+      ];
+    end;
+    pending_actions = map [
+      1n -> record
+        votes = (set[]: set(address));
+        action = ("tz1LMJmzJuoM3AFEgPoQ2kEoPfj9FyskTZpS": address);
+      end;
+    ];
+  end
+
+  function t(const p: unit): unit is block {skip} with unit

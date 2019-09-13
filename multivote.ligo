@@ -1,3 +1,0 @@
-(* multivote contract *)
-
-

@@ -30,10 +30,30 @@ end
 type ret_type is list(operation) * storage_t
 //const nops: list(operation) = nil
 
-function vote(const s: storage_t; const vote: nat * bool): ret_type is
+
+#include "minimal_multivote_mock.ligo"
+
+function authorized(const s: storage_t): unit is
   block {
-    skip
-  } with ((nil: list(operation)), s)
+    const snd: address = mock_sender(unit);
+    if not set_mem(snd, s.voters.voters) 
+    then fail("Unauthorized");
+    else skip;
+  } with unit
+
+function vote_action(const s: storage_t; const action: pending_action; const vote: nat*bool): ret_type is
+  block { skip } with ((nil: list(operation)), s)
+
+function vote(const s: storage_t; const vote: nat * bool): ret_type is
+  var r: ret_type := ((nil: list(operation)), s)
+  block {
+      authorized(s);
+      const pending: option(pending_action) = s.pending_actions[vote.0];
+      r := case pending of
+         | Some(p) -> r//vote_action(s, p, vote)
+         | None    -> r//fail_no_action(r) //fail("There is no such pending action")
+      end;
+  } with r
 
 function append_action(const s: storage_t; const a: address): storage_t is
   block {
@@ -55,11 +75,9 @@ function submit(const s: storage_t; const a: action): ret_type is
   } with ((nil: list(operation)), ss)
 
 
-#include "minimal_multivote_mock.ligo"
-
 function s(const p: param): ret_type is
   block { skip  } with case p of
-    | Vote(v)   -> vote(init_storage, v)
+    | Vote(v)   -> vote(pending_storage, v)
     | Submit(a) -> submit(init_storage, a)
   end
 
