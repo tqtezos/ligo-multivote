@@ -4,19 +4,19 @@ because CLI supports only one metaparameter --amount, we will use amount to enco
 */
 
 //for testing purposes lets mock a sender address
-//#include "addresses.ligo"
+#include "addresses.ligo"
 
 function mock_sender(const p: unit): address is
   var a: address := sender
   block {
     if amount = 1000000mtz then
-      a := ("tz1VMZLCc7hRQvvHSsj377FNASJ9BnpDQPNJ": address) //alice
+      a := alice
     else if amount = 2000000mtz then
-      a := ("tz1bgkesFfKbQgnmpGvkxDSyQYs8ha6uSiuv": address) //bob
+      a := bob
     else if amount = 3000000mtz then
-      a := ("tz1Uev5FnCRhwsKweHKCApXXGgqSfLYBGvWH": address) //peter
+      a := peter
     else if amount = 4000000mtz then
-      a := ("tz1LMJmzJuoM3AFEgPoQ2kEoPfj9FyskTZpS": address) //jane
+      a := jane
     else
       a := sender
   } with a
@@ -27,9 +27,9 @@ function mock_sender(const p: unit): address is
     voters = record
       threshold = 2n;
       voters = set [
-        ("tz1VMZLCc7hRQvvHSsj377FNASJ9BnpDQPNJ": address);
-        ("tz1bgkesFfKbQgnmpGvkxDSyQYs8ha6uSiuv": address);
-        ("tz1Uev5FnCRhwsKweHKCApXXGgqSfLYBGvWH": address);
+        alice;
+        bob;
+        peter;
       ];
     end;
     pending_actions = (map []: map(nat, pending_action));
@@ -41,15 +41,15 @@ function mock_sender(const p: unit): address is
     voters = record
       threshold = 2n;
       voters = set [
-        ("tz1VMZLCc7hRQvvHSsj377FNASJ9BnpDQPNJ": address);
-        ("tz1bgkesFfKbQgnmpGvkxDSyQYs8ha6uSiuv": address);
-        ("tz1Uev5FnCRhwsKweHKCApXXGgqSfLYBGvWH": address);
+        alice;
+        bob;
+        peter;
       ];
     end;
     pending_actions = map [
       1n -> record
         votes = (set[]: set(address));
-        target = ("tz1LMJmzJuoM3AFEgPoQ2kEoPfj9FyskTZpS": address);
+        target = jane;
       end;
     ];
   end
@@ -60,15 +60,15 @@ function mock_sender(const p: unit): address is
     voters = record
       threshold = 2n;
       voters = set [
-        ("tz1VMZLCc7hRQvvHSsj377FNASJ9BnpDQPNJ": address);
-        ("tz1bgkesFfKbQgnmpGvkxDSyQYs8ha6uSiuv": address);
-        ("tz1Uev5FnCRhwsKweHKCApXXGgqSfLYBGvWH": address);
+        alice;
+        bob;
+        peter;
       ];
     end;
     pending_actions = map [
       1n -> record
-        votes = set[ ("tz1bgkesFfKbQgnmpGvkxDSyQYs8ha6uSiuv": address); ];
-        target = ("tz1LMJmzJuoM3AFEgPoQ2kEoPfj9FyskTZpS": address);
+        votes = set[ bob; ];
+        target = jane;
       end;
     ];
   end
