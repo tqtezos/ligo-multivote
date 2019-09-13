@@ -6,9 +6,14 @@ type action is record
   target: address;
 end
 
+type vote is record
+  action_id: nat;
+  vote: bool;
+end
+
 type param is 
   | Submit of action  
-  | Vote of nat * bool
+  | Vote of vote
 
 
 type pending_action is record
@@ -66,28 +71,28 @@ function execute_action(const s: storage_t; const id: nat; const action: pending
     s.pending_actions := pending;
    } with (list tx end, s)
 
-function vote_action(const s: storage_t; const action: pending_action; const vote: nat*bool): ret_type is
+function vote_action(const s: storage_t; const action: pending_action; const v: vote): ret_type is
   var ret: ret_type := (nops, s)
   block { 
     const snd: address = mock_sender(unit);
     
-    if vote.1 
+    if v.vote 
     then action.votes := set_add(snd, action.votes);
     else action.votes := set_remove(snd, action.votes);
 
     const nvotes: nat = size(action.votes);
     if nvotes < s.authorization.threshold
-    then ret := update_action(s, vote.0, action);
-    else ret := execute_action(s, vote.0, action);
+    then ret := update_action(s, v.action_id, action);
+    else ret := execute_action(s, v.action_id, action);
   } with ret
 
-function vote(const s: storage_t; const vote: nat * bool): ret_type is
+function vote(const s: storage_t; const v: vote): ret_type is
   block {
       authorized(s);
 
-      const pending: option(pending_action) = s.pending_actions[vote.0];
+      const pending: option(pending_action) = s.pending_actions[v.action_id];
       const r: (bool * ret_type) = case pending of
-         | Some(p) -> (True, vote_action(s, p, vote))
+         | Some(p) -> (True, vote_action(s, p, v))
          | None    -> (False, (nops, s)) 
       end;
 
