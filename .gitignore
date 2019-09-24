@@ -1,2 +1,3 @@
 *.pp.ligo
-.vscode
+*.vscode
+*.code-workspace
