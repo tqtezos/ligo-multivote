@@ -39,7 +39,7 @@ const nops: list(operation) = nil
 function assert(const cond: bool; const msg: string): unit is
   block {
      if not cond 
-    then fail("Unauthorized");
+    then failwith("Unauthorized");
     else skip;
   } with unit
 
@@ -50,7 +50,7 @@ function authorized(const s: storage_t): unit is
   block {
     const snd: address = mock_sender(unit);
     if not set_mem(snd, s.authorization.voters) 
-    then fail("Unauthorized");
+    then failwith("Unauthorized");
     else skip;
   } with unit
 
@@ -97,7 +97,7 @@ function vote(const s: storage_t; const v: vote): ret_type is
       end;
 
       if not r.0 
-      then fail("There is no such pending action");
+      then failwith("There is no such pending action");
       else skip;
 
   } with r.1
@@ -117,7 +117,7 @@ function submit(const s: storage_t; const a: action): ret_type is
   var ss: storage_t := s
   block {
     if s.action_count =/= a.id
-    then fail("invalid submittted action id");
+    then failwith("invalid submittted action id");
     else ss := append_action(s, a.target);
   } with (nops, ss)
 
